@@ -157,9 +157,18 @@ class Jadwal extends CI_Controller
 							   FROM jadwal AS tj, mapel AS tm, guru AS tg, ruangan AS tr
 							   WHERE tj.kd_mapel = tm.kd_mapel AND tj.id_guru = tg.id_guru AND tj.kd_ruangan = tr.kd_ruangan AND tj.kd_jurusan = '$kode_jurusan' AND tj.kd_kelas = '$kelas'";
 		$data_jadwal	= $this->db->query($sql_datajadwal)->result_array();
-		$this->template->load('print', 'jadwal/cetak_jadwal', array(
+		// $this->template->load('print', 'jadwal/cetak_jadwal', array(
+		// 	'data_jadwal' => $data_jadwal
+		// ));
+		$this->load->library('pdfgenerator');
+
+		$this->load->view('jadwal/cetak_jadwal', array(
 			'data_jadwal' => $data_jadwal
 		));
+
+		$html = $this->output->get_output();
+
+		$this->pdfgenerator->generate($html, 'Jadwal-Pelajaran', 'A4', 'landscape');
 	}
 
 	function getPelajaran($jam, $hari, $kelas)
